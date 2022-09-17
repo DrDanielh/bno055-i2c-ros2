@@ -1,5 +1,6 @@
 #include "bno055_i2c_node.h"
 #include "rclcpp/rclcpp.hpp"
+#include <string>
 #include <memory>
 #include <chrono>
 
@@ -15,20 +16,20 @@ BNO055I2CNode::BNO055I2CNode() : Node("bno055_node") {
     //     return;
     // }
 
-    this->declare_parameter<std::string>("device", "/dev/i2c-1");
-    this->declare_parameter<int>("address", BNO055_ADDRESS_A);
-    this->declare_parameter<std::string>("frame_id", "bno055");
-    this->declare_parameter<double>("rate", 100);
+    // this->declare_parameter<std::string>("device", "/dev/i2c-1");
+    // this->declare_parameter<int>("address", BNO055_ADDRESS_A);
+    // this->declare_parameter<std::string>("frame_id", "bno055");
+    // this->declare_parameter<double>("rate", 100);
 
     // nh_priv->param("device", param_device, (std::string)"/dev/i2c-1");
     // nh_priv->param("address", param_address, (int)BNO055_ADDRESS_A);
     // nh_priv->param("frame_id", param_frame_id, (std::string)"imu");
     // nh_priv->param("rate", param_rate, (double)100);
 
-    param_device = this->get_parameter("device").as_string();
-    param_address = this->get_parameter("address").as_int();
-    param_frame_id = this->get_parameter("address").as_string();;
-    param_rate = this->get_parameter("rate").as_double();
+    param_device = "/dev/i2c-1"; //this->get_parameter("device").as_string();
+    param_address = BNO055_ADDRESS_A; //this->get_parameter("address").as_int();
+    param_frame_id = "bno055"; //this->get_parameter("address").as_string();;
+    param_rate = 100; //this->get_parameter("rate").as_double();
  
     imu = std::make_unique<imu_bno055::BNO055I2CDriver>(param_device, param_address);
 
