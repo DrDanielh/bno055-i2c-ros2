@@ -17,7 +17,7 @@ BNO055I2CNode::BNO055I2CNode() : Node("bno055_node") {
 
     this->declare_parameter<std::string>("device", "/dev/i2c-1");
     this->declare_parameter<int>("address", BNO055_ADDRESS_A);
-    this->declare_parameter<std::string>("frame_id", "imu");
+    this->declare_parameter<std::string>("frame_id", "bno055");
     this->declare_parameter<double>("rate", 100);
 
     // nh_priv->param("device", param_device, (std::string)"/dev/i2c-1");
