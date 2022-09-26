@@ -4,7 +4,7 @@
 #include <memory>
 #include <chrono>
 
-BNO055I2CNode::BNO055I2CNode() : Node("bno055_node") {
+BNO055I2CNode::BNO055I2CNode() : Node("bno055") {
     RCLCPP_INFO(this->get_logger(), "Instantiated bno055 node.");
     
     // nh = new ros::NodeHandle();
@@ -16,20 +16,20 @@ BNO055I2CNode::BNO055I2CNode() : Node("bno055_node") {
     //     return;
     // }
 
-    // this->declare_parameter<std::string>("device", "/dev/i2c-1");
-    // this->declare_parameter<int>("address", BNO055_ADDRESS_A);
-    // this->declare_parameter<std::string>("frame_id", "bno055");
-    // this->declare_parameter<double>("rate", 100);
+    this->declare_parameter<std::string>("device", "/dev/i2c-1");
+    this->declare_parameter<int>("address", BNO055_ADDRESS_A);
+    this->declare_parameter<std::string>("frame_id", "bno055");
+    this->declare_parameter<double>("rate", 100);
 
     // nh_priv->param("device", param_device, (std::string)"/dev/i2c-1");
     // nh_priv->param("address", param_address, (int)BNO055_ADDRESS_A);
     // nh_priv->param("frame_id", param_frame_id, (std::string)"imu");
     // nh_priv->param("rate", param_rate, (double)100);
 
-    param_device = "/dev/i2c-1"; //this->get_parameter("device").as_string();
-    param_address = BNO055_ADDRESS_A; //this->get_parameter("address").as_int();
-    param_frame_id = "bno055"; //this->get_parameter("address").as_string();;
-    param_rate = 100; //this->get_parameter("rate").as_double();
+    param_device = this->get_parameter("device").as_string();
+    param_address = this->get_parameter("address").as_int();
+    param_frame_id = this->get_parameter("frame_id").as_string();;
+    param_rate = this->get_parameter("rate").as_double();
  
     imu = std::make_unique<imu_bno055::BNO055I2CDriver>(param_device, param_address);
 
@@ -41,11 +41,11 @@ BNO055I2CNode::BNO055I2CNode() : Node("bno055_node") {
     // pub_temp = nh->advertise<sensor_msgs::Temperature>("temp", 1);
     // pub_status = nh->advertise<diagnostic_msgs::DiagnosticStatus>("status", 1);
 
-    pub_data = this->create_publisher<sensor_msgs::msg::Imu>("data", 1);
-    pub_raw = this->create_publisher<sensor_msgs::msg::Imu>("raw", 1);
-    pub_mag = this->create_publisher<sensor_msgs::msg::MagneticField>("mag", 1);
-    pub_temp = this->create_publisher<sensor_msgs::msg::Temperature>("temp", 1);
-    pub_status = this->create_publisher<diagnostic_msgs::msg::DiagnosticStatus>("status", 1);
+    pub_data = this->create_publisher<sensor_msgs::msg::Imu>(node_name+"/data", 1);
+    pub_raw = this->create_publisher<sensor_msgs::msg::Imu>(node_name+"/raw", 1);
+    pub_mag = this->create_publisher<sensor_msgs::msg::MagneticField>(node_name+"/mag", 1);
+    pub_temp = this->create_publisher<sensor_msgs::msg::Temperature>(node_name+"/temp", 1);
+    pub_status = this->create_publisher<diagnostic_msgs::msg::DiagnosticStatus>(node_name+"/status", 1);
 
     // srv_reset = nh->advertiseService("reset", &BNO055I2CNode::onSrvReset, this);
 
@@ -128,6 +128,7 @@ bool BNO055I2CNode::readAndPublish() {
     msg_mag.magnetic_field.x = (double)record.raw_magnetic_field_x / 16.0;
     msg_mag.magnetic_field.y = (double)record.raw_magnetic_field_y / 16.0;
     msg_mag.magnetic_field.z = (double)record.raw_magnetic_field_z / 16.0;
+    msg_mag.magnetic_field_covariance = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     sensor_msgs::msg::Imu msg_data;
     msg_data.header.stamp = time;
@@ -144,12 +145,22 @@ bool BNO055I2CNode::readAndPublish() {
     msg_data.orientation.x = (double)record.fused_orientation_x / fused_orientation_norm;
     msg_data.orientation.y = (double)record.fused_orientation_y / fused_orientation_norm;
     msg_data.orientation.z = (double)record.fused_orientation_z / fused_orientation_norm;
+    msg_data.orientation_covariance = {0.0159, 0.0, 0.0, 0.0, 0.0159, 0.0, 0.0, 0.0, 0.0159};
     msg_data.linear_acceleration.x = (double)record.fused_linear_acceleration_x / 100.0;
     msg_data.linear_acceleration.y = (double)record.fused_linear_acceleration_y / 100.0;
     msg_data.linear_acceleration.z = (double)record.fused_linear_acceleration_z / 100.0;
+    msg_data.linear_acceleration_covariance = {0.017, 0.0, 0.0, 0.0, 0.017, 0.0, 0.0, 0.0, 0.017};
     msg_data.angular_velocity.x = (double)record.raw_angular_velocity_x / 900.0;
     msg_data.angular_velocity.y = (double)record.raw_angular_velocity_y / 900.0;
     msg_data.angular_velocity.z = (double)record.raw_angular_velocity_z / 900.0;
+    msg_data.angular_velocity_covariance = {0.04, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.04};
+    
+//     DEFAULT_VARIANCE_ACC = [0.017, 0.017, 0.017]
+// DEFAULT_VARIANCE_ANGULAR_VEL = [0.04, 0.04, 0.04]
+// DEFAULT_VARIANCE_ORIENTATION = [0.0159, 0.0159, 0.0159]
+// # TODO(flynneva) calculate default magnetic variance matrice
+// DEFAULT_VARIANCE_MAG = [0.0, 0.0, 0.0]
+
 
     sensor_msgs::msg::Temperature msg_temp;
     msg_temp.header.stamp = time;

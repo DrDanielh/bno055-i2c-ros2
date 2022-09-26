@@ -14,9 +14,9 @@ def generate_launch_description():
     ld = LaunchDescription()
    
     # Set up executables
-    bno055_node = Node(package='imu_bno055',
+    bno055_node = Node(package='bno055',
                         namespace=namespace,
-                        executable='bno055_i2c_node')
+                        executable='bno055_i2c')
     
 
     
