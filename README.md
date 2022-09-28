@@ -6,7 +6,7 @@ Add following lines to your launch file:
 
 This will publish data on following topics:
 
-        /bno055/data
+        /bno055/data            # sensor_msgs/Imu Message
         /bno055/raw
         /bno055/mag
         /bno055/temp
