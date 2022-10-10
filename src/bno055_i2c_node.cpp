@@ -4,8 +4,8 @@
 #include <memory>
 #include <chrono>
 
-BNO055I2CNode::BNO055I2CNode() : Node("bno055") {
-    RCLCPP_INFO(this->get_logger(), "Instantiated bno055 node.");
+BNO055I2CNode::BNO055I2CNode() : Node("bno055_i2c_ros2") {
+    RCLCPP_INFO(this->get_logger(), "Instantiated bno055_i2c_ros2 node.");
     
     // nh = new ros::NodeHandle();
     // nh_priv = new ros::NodeHandle("~");
@@ -41,11 +41,11 @@ BNO055I2CNode::BNO055I2CNode() : Node("bno055") {
     // pub_temp = nh->advertise<sensor_msgs::Temperature>("temp", 1);
     // pub_status = nh->advertise<diagnostic_msgs::DiagnosticStatus>("status", 1);
 
-    pub_data = this->create_publisher<sensor_msgs::msg::Imu>(node_name+"/data", 1);
-    pub_raw = this->create_publisher<sensor_msgs::msg::Imu>(node_name+"/raw", 1);
-    pub_mag = this->create_publisher<sensor_msgs::msg::MagneticField>(node_name+"/mag", 1);
-    pub_temp = this->create_publisher<sensor_msgs::msg::Temperature>(node_name+"/temp", 1);
-    pub_status = this->create_publisher<diagnostic_msgs::msg::DiagnosticStatus>(node_name+"/status", 1);
+    pub_data = this->create_publisher<sensor_msgs::msg::Imu>(topic_namespace+"/data", 1);
+    pub_raw = this->create_publisher<sensor_msgs::msg::Imu>(topic_namespace+"/raw", 1);
+    pub_mag = this->create_publisher<sensor_msgs::msg::MagneticField>(topic_namespace+"/mag", 1);
+    pub_temp = this->create_publisher<sensor_msgs::msg::Temperature>(topic_namespace+"/temp", 1);
+    pub_status = this->create_publisher<diagnostic_msgs::msg::DiagnosticStatus>(topic_namespace+"/status", 1);
 
     // srv_reset = nh->advertiseService("reset", &BNO055I2CNode::onSrvReset, this);
 

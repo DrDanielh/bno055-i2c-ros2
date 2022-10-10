@@ -27,7 +27,7 @@ class BNO055I2CNode : public rclcpp::Node {
 
         std::unique_ptr<imu_bno055::BNO055I2CDriver> imu;
 
-        std::string node_name = "bno055";
+        std::string topic_namespace = "bno055";
         std::string param_device;
         int param_address;
         double param_rate;
