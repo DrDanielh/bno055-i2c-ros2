@@ -4,9 +4,9 @@ https://github.com/dheera/ros-imu-bno055
 
 Add following lines to your launch file:
 
-        bno055_node = Node(package='bno055',
+        bno055_node = Node(package='bno055_i2c_ros2',
                             namespace="",
-                            executable='bno055_i2c')
+                            executable='bno055_i2c_ros2')
 
 This will publish data on following topics:
 
