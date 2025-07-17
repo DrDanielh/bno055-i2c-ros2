@@ -10,7 +10,6 @@
 #include "sensor_msgs/msg/imu.hpp"
 #include "sensor_msgs/msg/magnetic_field.hpp"
 #include "sensor_msgs/msg/temperature.hpp"
-//#include "std_srvs/msg/Trigger.hpp"
 #include "std_msgs/msg/u_int8.hpp"
 #include "diagnostic_msgs/msg/diagnostic_status.hpp"
 #include "diagnostic_msgs/msg/diagnostic_array.hpp"
@@ -20,7 +19,6 @@ class BNO055I2CNode : public rclcpp::Node {
     public:
         BNO055I2CNode();
 
-        //bool onSrvReset(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
     private:
         void update();
         bool readAndPublish();
@@ -41,14 +39,6 @@ class BNO055I2CNode : public rclcpp::Node {
         rclcpp::Publisher<sensor_msgs::msg::Temperature>::SharedPtr pub_temp;
         rclcpp::Publisher<diagnostic_msgs::msg::DiagnosticStatus>::SharedPtr pub_status;
 
-        // ros::Publisher pub_data;
-        // ros::Publisher pub_raw;
-        // ros::Publisher pub_mag;
-        // ros::Publisher pub_temp;
-        // ros::Publisher pub_status;
-        // ros::ServiceServer srv_reset;
-
-        //std::unique_ptr<ros::Rate> rate;
         rclcpp::TimerBase::SharedPtr update_timer;
 
         watchdog::Watchdog watchdog;
